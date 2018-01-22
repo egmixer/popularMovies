@@ -1,15 +1,9 @@
-package com.hazemelsawy.popularmovies;
-
-import android.os.Parcelable;
+package com.hazemelsawy.popularmovies.webservice;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-
-/**
- * Created by Hazem on 10/13/2017.
- */
 
 public class MovieModel {
 

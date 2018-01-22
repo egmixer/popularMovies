@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.hazemelsawy.popularmovies.MainActivity">
-
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/rv_posters"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
 
+    <fragment
+        android:id="@+id/list_fragment"
+        class="com.hazemelsawy.popularmovies.fragments.ListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_list" />
 </RelativeLayout>

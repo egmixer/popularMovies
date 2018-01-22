@@ -1,4 +1,4 @@
-package com.hazemelsawy.popularmovies;
+package com.hazemelsawy.popularmovies.webservice;
 
 import java.util.concurrent.TimeUnit;
 
@@ -9,10 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
-/**
- * Created by Hazem on 10/13/2017.
- */
 
 public class NetworkUtil {
     private static final String TAG = NetworkUtil.class.getSimpleName();
@@ -48,6 +44,12 @@ public class NetworkUtil {
     public interface Services {
         @GET("{category}")
         Call<MovieModel> getMovies(@Path("category") String category, @Query("api_key") String apiKey);
+
+        @GET("{id}/reviews")
+        Call<ReviewModel> getReviews(@Path("id") String id, @Query("api_key") String apiKey);
+
+        @GET("{id}/trailers")
+        Call<TrailerModel> getTrailers(@Path("id") String id, @Query("api_key") String apiKey);
     }
 
 }
