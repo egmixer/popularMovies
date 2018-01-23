@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailsFragment extends Fragment {
+    private static final String TAG = DetailsFragment.class.getSimpleName();
     private static final String API_KEY = BuildConfig.API_KEY;
     private TextView movieTitle;
     private ImageView moviePoster;
@@ -55,7 +57,7 @@ public class DetailsFragment extends Fragment {
     private ArrayList<TrailerModel.Youtube> youtubeArrayList = new ArrayList<>();
     private ArrayList<ReviewModel.Result> resultArrayList = new ArrayList<>();
     private Cursor trailersCursor = null;
-    private Cursor ReviewsCursor = null;
+    private Cursor reviewsCursor = null;
     private TrailersAdapter trailersAdapter;
     private ReviewsAdapter reviewsAdapter;
     private Uri trailerUriWithId;
@@ -159,22 +161,6 @@ public class DetailsFragment extends Fragment {
                 reviewUriWithId = MoviesContract.ReviewsEntry
                         .buildReviewsUriWithId(Long.valueOf(movieId));
                 fetchMovieTrailersAndReviews();
-                trailersCursor = getContext().getContentResolver().query(
-                        trailerUriWithId,
-                        null,
-                        null,
-                        null,
-                        null);
-                if (trailersCursor.getCount() > 0)
-                    trailersAdapter.swapCursor(trailersCursor);
-                ReviewsCursor = getContext().getContentResolver().query(
-                        reviewUriWithId,
-                        null,
-                        null,
-                        null,
-                        null);
-                if (ReviewsCursor.getCount() > 0)
-                    reviewsAdapter.swapCursor(ReviewsCursor);
             }
         }
     }
@@ -212,6 +198,7 @@ public class DetailsFragment extends Fragment {
             @Override
             public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
                 youtubeArrayList = response.body().getYoutube();
+                Log.d(TAG, "onResponse: " + youtubeArrayList.size());
                 if (youtubeArrayList.size() > 0)
                     insertTrailersToDB();
             }
@@ -228,6 +215,7 @@ public class DetailsFragment extends Fragment {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
                 resultArrayList = response.body().getResults();
+                Log.d(TAG, "onResponse: " + resultArrayList.size());
                 if (resultArrayList.size() > 0)
                     insertReviewsToDB();
 
@@ -253,9 +241,17 @@ public class DetailsFragment extends Fragment {
         getContext().getContentResolver().delete(trailerWithIdUri, null, null);
         if (valuesVector.size() > 0) {
             ContentValues[] contentArray = new ContentValues[valuesVector.size()];
+            Log.d(TAG, "insertTrailersToDB: " + valuesVector.size());
             valuesVector.toArray(contentArray);
             getContext().getContentResolver().bulkInsert(trailerUri, contentArray);
         }
+        trailersCursor = getContext().getContentResolver().query(
+                trailerUriWithId,
+                null,
+                null,
+                null,
+                null);
+        trailersAdapter.swapCursor(trailersCursor);
     }
 
     private void insertReviewsToDB() {
@@ -271,11 +267,19 @@ public class DetailsFragment extends Fragment {
         Uri reviewWithIdUri = MoviesContract.ReviewsEntry.buildReviewsUriWithId(Long.valueOf(movieId));
         getContext().getContentResolver().delete(reviewWithIdUri, null, null);
         if (valuesVector.size() > 0) {
+            Log.d(TAG, "insertReviewsToDB: " + valuesVector.size());
             ContentValues[] contentArray = new ContentValues[valuesVector.size()];
             valuesVector.toArray(contentArray);
             getContext().getContentResolver().bulkInsert(reviewUri, contentArray);
-
         }
+        reviewsCursor = getContext().getContentResolver().query(
+                reviewUriWithId,
+                null,
+                null,
+                null,
+                null);
+        reviewsAdapter.swapCursor(reviewsCursor);
+
     }
 
     synchronized private void fetchMovieTrailersAndReviews() {
