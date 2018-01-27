@@ -90,6 +90,7 @@ public class DetailsFragment extends Fragment {
     }
 
     public void getMovie(Uri uri) {
+        Log.d(TAG, "getMovie: " + uri);
         mUri = uri;
         if (getArguments() != null)
             mUri = getArguments().getParcelable(MainActivity.DETAIL_URI);
@@ -228,6 +229,7 @@ public class DetailsFragment extends Fragment {
     }
 
     private void insertTrailersToDB() {
+        Log.d(TAG, "insertTrailersToDB: ");
         Vector<ContentValues> valuesVector = new Vector<>();
         ContentValues trailerContent = new ContentValues();
         for (int i = 0; i < youtubeArrayList.size(); i++) {
@@ -255,6 +257,7 @@ public class DetailsFragment extends Fragment {
     }
 
     private void insertReviewsToDB() {
+        Log.d(TAG, "insertReviewsToDB: ");
         Vector<ContentValues> valuesVector = new Vector<>();
         ContentValues reviewsContent = new ContentValues();
         for (int i = 0; i < resultArrayList.size(); i++) {
@@ -291,8 +294,9 @@ public class DetailsFragment extends Fragment {
                 null);
         if (null == trailersCursor || trailersCursor.getCount() == 0) {
             getTrailers();
-        }
-        trailersCursor.close();
+        } else
+            trailersAdapter.swapCursor(trailersCursor);
+
         Cursor reviewsCursor = getContext().getContentResolver().query(
                 reviewUriWithId,
                 null,
@@ -301,7 +305,8 @@ public class DetailsFragment extends Fragment {
                 null);
         if (reviewsCursor == null || reviewsCursor.getCount() == 0)
             getReviews();
-        reviewsCursor.close();
+        else
+            reviewsAdapter.swapCursor(reviewsCursor);
     }
 
 }

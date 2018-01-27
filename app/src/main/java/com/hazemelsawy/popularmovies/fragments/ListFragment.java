@@ -51,6 +51,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     private Cursor mCursor = null;
     private Uri movieUri;
     private MovieClickListener movieClickListener;
+    private boolean dbIsEmpty = false;
 
     public ListFragment() {
         // Required empty public constructor
@@ -102,28 +103,12 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
         init = true;
         category = POPULAR_VALUE;
         PrefUtil.saveStringToPref(category, CATEGORY_KEY);
-        Thread invalidateThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                movieUri = MoviesContract.MostPopularEntry.CONTENT_URI;
-                Cursor cursor = getContext().getContentResolver().query(
-                        movieUri,
-                        null,
-                        null,
-                        null,
-                        null);
-                if (null == cursor || cursor.getCount() == 0)
-                    fetchMoviesByCategory();
-                cursor.close();
-            }
-        });
-        invalidateThread.start();
-    }
+      }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(LOADER_NUMBER, null, this);
         setInit();
+        getLoaderManager().initLoader(LOADER_NUMBER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -281,7 +266,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
             mCursor = data;
             gridAdapter.swapCursor(data);
         } else {
-            gridAdapter.swapCursor(null);
+            dbIsEmpty = true;
         }
     }
 

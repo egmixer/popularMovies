@@ -27,18 +27,12 @@ public class TrailersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MyViewHolder) {
             MyViewHolder myViewHolder = (MyViewHolder) holder;
             if (mCursor != null && mCursor.moveToFirst()) {
                 mCursor.moveToPosition(position);
-                ((MyViewHolder) holder).trailer.setText(mCursor.getString(2));
-                myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        listener.onItemClick(view, position);
-                    }
-                });
+                myViewHolder.trailer.setText(mCursor.getString(2));
             }
 
         }
@@ -69,7 +63,12 @@ public class TrailersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             trailerImage = (ImageView) itemView.findViewById(R.id.iv_trailer);
             trailer = (TextView) itemView.findViewById(R.id.tv_trailer);
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(view, getLayoutPosition());
+                }
+            });
         }
     }
 
